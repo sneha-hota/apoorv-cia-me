@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Burger King Global – Financial &amp; Market Dashboard</title>
+<style>
+:root{--bg:#fbf3e6;--card:#fff;--ink:#3b1d10;--mut:#7d604f;--red:#d62300;--org:#ff8732;--line:#ecd9c3;--land:#f1dcc0;--sea:#fff8ee;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d0f09;--card:#2b1810;--ink:#fbeedd;--mut:#c7a58d;--line:#4a2c1d;--land:#4a2c1d;--sea:#231209;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d0f09;--card:#2b1810;--ink:#fbeedd;--mut:#c7a58d;--line:#4a2c1d;--land:#4a2c1d;--sea:#231209;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(110deg,#d62300,#ff8732 45%,#f5b800 75%,#2e9d4f);background-size:200% 100%;animation:sh 10s ease-in-out infinite alternate;color:#fff;padding:22px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+@keyframes sh{to{background-position:100% 0}}
+header h1{margin:0;font-size:clamp(20px,4vw,30px)}header p{margin:2px 0 0;font-size:13px;opacity:.95}
+.bun{display:inline-block;animation:bob 2.4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-5px) rotate(-6deg)}}
+main{max-width:1180px;margin:0 auto;padding:18px 16px 40px}
+.ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:end;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
+.ctrl label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+select,button,input[type=range]{font:inherit;color:var(--ink);cursor:pointer}
+select,button{background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;transition:.2s}
+select:hover,button:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 4px 12px rgba(214,35,0,.2)}
+.grid{display:grid;gap:14px}.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:14px}
+.two{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));margin-top:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(214,35,0,.15);border-color:var(--org)}
+.kpi{border-top:5px solid var(--c)}.kpi small{color:var(--mut);font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.kpi b{display:block;font-size:27px;color:var(--c);margin-top:4px}.kpi span{font-size:12px;color:var(--mut)}
+h2{font-size:15px;margin:0 0 10px}.cv{position:relative;height:300px}.tall .cv{height:340px}
+#map{width:100%;display:block;border-radius:10px;background:var(--sea)}
+#tip{position:absolute;pointer-events:none;background:#3b1d10;color:#fff;padding:6px 10px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .15s;white-space:nowrap;z-index:5}
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:10px}
+.sim label{font-size:12px;color:var(--mut);font-weight:600}.sim output{color:var(--red);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--red)}
+.card.low{background:linear-gradient(180deg,rgba(214,35,0,.16),var(--card));border-color:#d62300;box-shadow:0 0 0 2px rgba(214,35,0,.35),0 10px 26px rgba(214,35,0,.28);animation:alarm 1.4s ease-in-out 3}
+.card.low h2,.kpi.low b{color:#d62300}
+.badge{display:none;position:absolute;top:12px;right:14px;background:#d62300;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;letter-spacing:.5px}
+.low>.badge{display:inline-block}
+@keyframes alarm{50%{box-shadow:0 0 0 7px rgba(214,35,0,.45)}}
+td.lowc{color:#d62300;font-weight:700}
+.live{display:grid;grid-template-columns:2fr 1fr;gap:12px}@media(max-width:700px){.live{grid-template-columns:1fr}}
+#lfeed{list-style:none;padding:0;margin:0;font-size:12px;max-height:210px;overflow:hidden}#lfeed li{padding:5px 8px;border-left:4px solid var(--org);margin:4px 0;background:rgba(255,135,50,.1);border-radius:0 6px 6px 0;animation:inn .4s}@keyframes inn{from{opacity:0;transform:translateX(-14px)}}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2e9d4f;margin-right:6px;animation:bl 1s infinite}@keyframes bl{50%{opacity:.2}}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px;min-width:620px}
+th,td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+tbody tr{transition:.15s;cursor:pointer}tbody tr:hover{background:rgba(255,135,50,.18)}tr.sel{background:rgba(214,35,0,.14);font-weight:700}
+ul{margin:0;padding-left:20px}li{margin:5px 0}.note{font-size:12px;color:var(--mut);margin-top:8px}a{color:var(--red)}
+</style>
+</head>
+<body>
+<header>
+  <div><h1><span class="bun">🍔</span> Burger King Global – Financial &amp; Market Dashboard</h1>
+  <p>Restaurant Brands International (NYSE/TSX: QSR) · Burger King in 120+ markets · US$ unless stated</p></div>
+  <button id="snd" aria-pressed="false">🔇 Sound off</button>
+</header>
+<main>
+  <div class="ctrl">
+    <label>Year<select id="year"></select></label>
+    <label>Metric<select id="metric"></select></label>
+    <label>Chart style<select id="style"><option value="line">Line</option><option value="bar">Bar</option></select></label><button id="play">▶ Play timeline</button><label>Speed<select id="spd"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    <span class="note" style="margin:0 0 6px auto">Click a point, bar or table row; hover the map. Red = low sales (growth under 2% or a fall vs the prior year/quarter). Turn Sound on for effects.</span>
+  </div>
+  <div class="grid kpis" id="kpis"></div>
+  <div class="card" id="lc" style="margin-bottom:14px"><span class="badge">SALES DIPPING</span><h2><span class="dot"></span>Live global sales simulator <span style="font-weight:400;color:var(--mut)">· simulated stream, not real transactions</span></h2>
+<div style="display:flex;flex-wrap:wrap;gap:18px;align-items:end;margin-bottom:10px"><button id="live">⏸ Stop live simulation</button>
+<label style="font-size:12px;color:var(--mut);font-weight:600">Price change <output id="lpo" style="color:var(--red)">+10%</output><br><input type="range" id="lp" min="-10" max="30" step="1" value="10"></label>
+<div><small>Revenue now</small><br><b id="lrps" style="font-size:22px">$0/s</b></div><div><small>Revenue since start</small><br><b id="lrev" style="font-size:22px">$0</b></div><div><small>Orders since start</small><br><b id="lord" style="font-size:22px">0</b></div></div>
+<div class="live"><div class="cv" style="height:210px"><canvas id="c5"></canvas></div><ul id="lfeed"></ul></div>
+<p class="note">Baseline = reported 2024 Burger King system-wide sales ($27.7B) spread over a year (about $879 per second). Average order assumed at $9, with random ±15% drift. Raise the price and the simulator applies the elasticity sliders below, so revenue per second rises or falls live; it turns red and sounds an alarm when it dips under baseline.</p></div>
+<div class="card tall" id="mc"><span class="badge">LOW SALES</span><h2 id="mt"></h2><div class="cv"><canvas id="c1"></canvas></div></div>
+
+  <div class="grid two">
+    <div class="card"><h2 id="qt">Quarterly revenue</h2><div class="cv"><canvas id="c2"></canvas></div></div>
+    <div class="card"><h2>Top Burger King markets by restaurants (2025–26)</h2><div class="cv"><canvas id="c3"></canvas></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px;position:relative"><h2>World map – Burger King restaurants by country (bubble size = restaurants)</h2>
+    <canvas id="map"></canvas><div id="tip"></div>
+    <p class="note">Snapshot, not time-based. US = RBI year-end 2025; China, India, UK from company/press reports; other markets are estimates (WorldPopulationReview 2025). Remaining ≈3,700 restaurants sit in 100+ smaller markets.</p></div>
+
+  <div class="card" style="margin-top:14px"><span class="badge">REVENUE FALLS</span><h2>Price vs demand – interactive simulator</h2>
+    <div class="sim">
+      <div><label>Price increase <output id="o1"></output></label><input type="range" id="p" min="-10" max="30" step="1" value="10"></div>
+      <div><label>Elasticity below threshold <output id="o2"></output></label><input type="range" id="e1" min="-1.5" max="0" step="0.05" value="-0.35"></div>
+      <div><label>Tipping point (%) <output id="o3"></output></label><input type="range" id="th" min="6" max="20" step="1" value="12"></div>
+      <div><label>Elasticity above threshold <output id="o4"></output></label><input type="range" id="e2" min="-4" max="-0.5" step="0.1" value="-2"></div>
+    </div>
+    <div class="cv" style="height:320px"><canvas id="c4"></canvas></div>
+    <p id="res" style="font-weight:600"></p>
+    <p class="note">This is an illustrative model, not reported data. Defaults are calibrated to real anchors: Carrols (largest BK franchisee) Q4 2021 – average order +12.1% with traffic −4.2% (implied ≈ −0.35); Revenue Management Solutions found traffic fell sharply once price rises passed about 10–13%. Real prices: Whopper averaged $4.19 (Dec 2019) vs $7.79 (2024) per one analysis (+86%); a BK meal rose from $6.76 to $8.18 (+21%) in 2021–22 (MoneyGeek). Burger prices industry-wide rose about 14% from Jan 2023 (Datassential) while beef costs rose about 32%.</p></div>
+
+  <div class="grid two">
+    <div class="card"><h2>Key insights</h2><ul>
+      <li>RBI revenue more than doubled from $4.05B (2015) to $9.43B (2025); the only fall was COVID-hit 2020 (−11.3%), followed by +15.5% in 2021.</li>
+      <li>Burger King runs roughly 19,900 restaurants in 120+ markets, about 95% franchised, so growth is driven by openings abroad as much as US sales.</li>
+      <li>International is the engine: BK international comparable sales +4.8% in 2025 vs +1.6% at BK US (US system sales only +0.8% to $11.6B).</li>
+      <li>China is the big growth bet: about 1,250 restaurants today with a joint venture targeting 4,000+ by 2035.</li>
+      <li>Pricing is a trade-off: beef inflation (+20% in 2025) squeezed US franchisee profits, so value offers and price tipping points matter.</li>
+    </ul></div>
+    <div class="card"><h2>Sources</h2><ul>
+      <li><a href="https://www.rbi.com/English/news/news-details/2026/Restaurant-Brands-International-Inc--Reports-Fourth-Quarter-and-Full-Year-2025-Results/default.aspx" target="_blank" rel="noopener">RBI Q4 &amp; FY2025 results</a> (revenue, system sales, BK US/Intl)</li>
+      <li><a href="https://www.macrotrends.net/stocks/charts/QSR/restaurant-brands/revenue" target="_blank" rel="noopener">Macrotrends</a> – RBI annual &amp; quarterly revenue 2014–2023</li>
+      <li><a href="https://expandedramblings.com/index.php/burger-king-statistics-facts/" target="_blank" rel="noopener">Expanded Ramblings</a> (from RBI Trending Schedules) – BK restaurants &amp; sales 2022–24</li>
+      <li><a href="https://www.sec.gov/Archives/edgar/data/0001618756/000119312519238958/d797842d424b3.htm" target="_blank" rel="noopener">SEC filing (2019)</a> – 18,008 BK restaurants at 30 Jun 2019</li>
+      <li><a href="https://worldpopulationreview.com/country-rankings/burger-king-by-country" target="_blank" rel="noopener">WorldPopulationReview</a>; <a href="https://www.aljazeera.com/economy/2025/11/11/burger-king-to-more-than-triple-outlets-in-china-under-joint-venture-plan" target="_blank" rel="noopener">Al Jazeera</a> (China)</li>
+      <li><a href="https://www.restaurantdive.com/news/Datassential-burger-prices-up-14-percent-two-years/814466/" target="_blank" rel="noopener">Restaurant Dive</a>, <a href="https://www.nrn.com/fast-casual/are-consumers-hitting-a-price-increase-breaking-point-" target="_blank" rel="noopener">NRN</a>, <a href="https://www.eatthis.com/most-overpriced-burger-chains-in-america/" target="_blank" rel="noopener">Eat This</a> – pricing</li>
+      <li>Brand site: <a href="https://www.burgerking.in/" target="_blank" rel="noopener">burgerking.in</a></li></ul></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Data table (click a row to select a year)</h2><div class="tw"><table id="tbl"></table></div>
+    <p class="note">Burger King is a segment of RBI, so annual revenue shown is RBI’s total (Tim Hortons, Burger King, Popeyes, Firehouse Subs). Brand-level figures are shown where retrieved; “—” means not found in the sources above (not zero). 2019 restaurants = 30 Jun; 2025 restaurants rounded. 2024–25 quarterly shows Q4 only. Snapshot compiled 24 Oct 2026; refresh after each quarterly result (next: Q3 2026, early Nov). Educational use.</p></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const Y=[2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],N=null;
+const PAL=["#d62300","#ff8732","#f5b800","#2e9d4f","#1f7ae0","#8e44ad","#e84393","#00a8a8"];
+const rev=[4052,4146,4576,5357,5603,4968,5739,6505,7022,8406,9434];
+const D={
+ rev:{l:"RBI total revenue (US$ M)",v:rev,c:PAL[0]},
+ gr:{l:"Revenue growth YoY (%)",v:rev.map((x,i)=>i?+((x/rev[i-1]-1)*100).toFixed(1):N),c:PAL[3]},
+ bkr:{l:"Burger King restaurants worldwide",v:[N,N,N,N,18008,N,N,18969,19384,19732,19900],c:PAL[4]},
+ sws:{l:"Burger King system-wide sales (US$ B)",v:[N,N,N,N,N,N,N,24.403,27.019,27.728,N],c:PAL[5]},
+ us:{l:"Burger King US system-wide sales (US$ B)",v:[N,N,N,N,N,N,N,N,N,11.484,11.578],c:PAL[6]},
+ cmp:{l:"BK international comparable sales (%)",v:[N,N,N,N,N,N,N,N,N,3.3,4.8],c:PAL[7]},
+ rbs:{l:"RBI system-wide sales (US$ B)",v:[N,N,N,N,N,N,N,N,N,44.476,46.762],c:PAL[1]}
+};
+const Q={2014:[241,261,279,416],2015:[933,1042,1020,1057],2016:[919,1040,1076,1111],2017:[1001,1133,1209,1234],2018:[1254,1343,1375,1385],2019:[1266,1400,1458,1479],2020:[1225,1048,1337,1358],2021:[1260,1438,1495,1546],2022:[1451,1639,1726,1689],2023:[1590,1775,1837,1820],2024:[N,N,N,2296],2025:[N,N,N,2466]};
+const C=[["United States",7025,-98,39,0],["China",1250,104,35,1],["Spain",974,-3.7,40,2],["Brazil",970,-52,-10,3],["Turkey",772,35,39,1],["Germany",753,10,51,2],["United Kingdom",559,-2,54,2],["France",567,2.5,46.5,2],["South Korea",517,127.8,36.5,1],["India",581,79,22,1],["Australia",471,134,-25,6],["Mexico",454,-102,23,0],["Canada",381,-100,57,0],["Italy",294,12.5,42.5,2],["Japan",253,138,36,1],["Malaysia",207,102,4,1],["Portugal",202,-8,39.5,2]];
+const RC=["#d62300","#1f7ae0","#f5b800","#2e9d4f","#8e44ad","#e84393","#00a8a8"];
+const $=id=>document.getElementById(id),fmt=n=>n==null?"—":n.toLocaleString("en-US");
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let snd=false,ac,ch={},last=-1;
+function tone(f,t0,d,type="sine",vol=.08,slide){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state=="suspended")ac.resume();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+t0;o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d+.02)}catch(e){}}
+function beep(f=620,d=.07){tone(f,0,d+.05,"triangle",.05)}
+const SFX={
+ chime(){[784,988,1319].forEach((f,i)=>tone(f,i*.07,.25,"sine",.07))},
+ rise(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.06,.2,"triangle",.07))},
+ fall(){[440,370,311,247].forEach((f,i)=>tone(f,i*.09,.28,"sawtooth",.05))},
+ alarm(){for(let i=0;i<3;i++){tone(880,i*.22,.14,"square",.05);tone(622,i*.22+.11,.14,"square",.05)}},
+ whoosh(){tone(200,0,.35,"sawtooth",.03,1600)},
+ pop(){tone(900,0,.08,"sine",.08,300)},
+ coin(){tone(988,0,.08,"square",.04);tone(1319,.08,.3,"square",.04)},
+ on(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.08,.2,"triangle",.07))}
+};
+Object.entries(D).forEach(([k,m])=>$("metric").add(new Option(m.l,k)));
+Y.forEach((y,i)=>$("year").add(new Option(y,i)));$("year").value=10;
+
+function countTo(el,to,dec){if(to==null){el.textContent="—";return}const t0=performance.now();(function s(t){const p=Math.min(1,(t-t0)/700),v=to*(1-Math.pow(1-p,3));el.textContent=v.toLocaleString("en-US",{minimumFractionDigits:dec,maximumFractionDigits:dec});if(p<1)requestAnimationFrame(s)})(t0)}
+function kpis(i){
+  const it=[["RBI revenue",D.rev.v[i],"US$ M",0,0,isLow("rev",i)],["Revenue growth",D.gr.v[i],"% YoY",1,3,isLow("gr",i)],["BK restaurants",D.bkr.v[i],"worldwide",0,4,false],["BK system-wide sales",D.sws.v[i],"US$ B",1,5,isLow("sws",i)]];
+  $("kpis").innerHTML=it.map(x=>`<div class="card kpi ${x[5]?"low":""}" style="--c:${x[5]?"#d62300":PAL[x[4]]}"><span class="badge">LOW</span><small>${x[0]}</small><b>0</b><span>${x[2]} · ${Y[i]}${x[1]==null?" · not in retrieved sources":""}</span></div>`).join("");
+  document.querySelectorAll(".kpi").forEach((c,k)=>{countTo(c.querySelector("b"),it[k][1],it[k][3]);c.onmouseenter=()=>beep(500+k*90,.05)});
+}
+const SALES=["rev","gr","sws","us","rbs","cmp"];
+function isLow(k,i){const v=D[k].v[i];if(v==null||!SALES.includes(k))return false;if(k=="gr"||k=="cmp")return v<2;let j=i-1;while(j>=0&&D[k].v[j]==null)j--;return j>=0&&v<D[k].v[j]*1.02}
+function statusSound(){const k=$("metric").value,i=+$("year").value;if(isLow(k,i))SFX.alarm();else if(D[k].v[i]!=null&&(D.gr.v[i]||0)>0)SFX.rise()}
+function main(){
+  const k=$("metric").value,m=D[k],sel=+$("year").value,type=$("style").value;
+  $("mt").textContent=m.l+" · 2015–2025";$("mc").classList.toggle("low",isLow(k,sel));
+  const col=Y.map((_,i)=>isLow(k,i)?"#d62300":i==sel?css("--ink"):PAL[i%PAL.length]);
+  ch.c1&&ch.c1.destroy();
+  ch.c1=new Chart($("c1"),{type,data:{labels:Y,datasets:[{data:m.v,borderColor:m.c,backgroundColor:type=="bar"?col:m.c+"33",fill:type=="line",tension:.35,borderWidth:3,showLine:true,spanGaps:true,pointRadius:Y.map((_,i)=>i==sel?10:5),pointHoverRadius:12,pointBackgroundColor:col,borderRadius:8}]},
+   options:{maintainAspectRatio:false,animation:{duration:900,easing:"easeOutQuart"},interaction:{mode:"index",intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>" "+(c.parsed.y==null?"not in sources":fmt(c.parsed.y))}}},
+    scales:{x:{ticks:{color:css("--mut")},grid:{display:false}},y:{ticks:{color:css("--mut")},grid:{color:css("--line")}}},
+    onHover:(e,el)=>{if(el.length&&el[0].index!==last){last=el[0].index;beep(300+last*55)}},onClick:(e,el)=>{if(el.length){$("year").value=el[0].index;update();SFX.pop();setTimeout(statusSound,250)}}}});
+}
+function quarterly(i){
+  const y=Y[i];$("qt").textContent="Quarterly revenue (US$ M) · "+y+" vs "+(y-1)+" (red = fell)";$("qt").parentElement.classList.toggle("low",(Q[y]||[]).some((v,j)=>v!=null&&Q[y-1]&&Q[y-1][j]!=null&&v<Q[y-1][j]));
+  ch.c2&&ch.c2.destroy();
+  ch.c2=new Chart($("c2"),{type:"bar",data:{labels:["Q1","Q2","Q3","Q4"],datasets:[{label:String(y-1),data:Q[y-1]||[N,N,N,N],backgroundColor:PAL[2],borderRadius:6},{label:String(y),data:Q[y],backgroundColor:Q[y].map((v,j)=>v!=null&&Q[y-1]&&Q[y-1][j]!=null&&v<Q[y-1][j]?"#d62300":PAL[4]),borderRadius:6}]},
+   options:{maintainAspectRatio:false,animation:{duration:1000,easing:"easeOutBounce"},plugins:{legend:{labels:{color:css("--mut")}}},scales:{x:{ticks:{color:css("--mut")},grid:{display:false}},y:{ticks:{color:css("--mut")},grid:{color:css("--line")}}},onHover:(e,el)=>{if(el.length)beep(350+el[0].index*80,.04)}}});
+}
+function markets(){
+  ch.c3&&ch.c3.destroy();
+  ch.c3=new Chart($("c3"),{type:"bar",data:{labels:C.map(c=>c[0]),datasets:[{data:C.map(c=>c[1]),backgroundColor:C.map(c=>RC[c[4]]),borderRadius:5}]},
+   options:{indexAxis:"y",maintainAspectRatio:false,animation:{duration:1100},plugins:{legend:{display:false}},scales:{x:{ticks:{color:css("--mut")},grid:{color:css("--line")}},y:{ticks:{color:css("--mut"),font:{size:11}},grid:{display:false}}},onHover:(e,el)=>{if(el.length)beep(300+el[0].index*30,.03)}}});
+}
+// map
+const POLY=[[[-168,66],[-140,70],[-95,72],[-80,68],[-62,58],[-55,50],[-67,44],[-76,35],[-81,25],[-97,26],[-105,20],[-95,16],[-85,10],[-80,8],[-92,14],[-105,22],[-117,32],[-124,40],[-125,49],[-140,60]],
+[[-55,60],[-45,60],[-20,70],[-25,75],[-55,75]],
+[[-80,10],[-60,11],[-50,0],[-35,-6],[-40,-22],[-58,-38],[-66,-55],[-75,-50],[-72,-30],[-70,-18],[-81,-5]],
+[[-10,36],[-9,43],[0,50],[10,55],[20,70],[40,68],[70,73],[100,75],[140,72],[170,68],[160,58],[140,45],[130,35],[122,30],[120,22],[108,18],[105,10],[100,2],[98,15],[90,22],[80,10],[73,20],[67,25],[57,25],[56,20],[43,13],[35,28],[34,31],[27,37],[12,38],[3,43]],
+[[-17,21],[-10,35],[10,37],[33,31],[43,12],[51,12],[40,-5],[40,-15],[33,-27],[20,-35],[12,-18],[9,-1],[-8,4],[-17,14]],
+[[114,-22],[130,-12],[142,-11],[153,-26],[147,-38],[135,-35],[115,-34]],
+[[130,32],[135,35],[141,41],[142,45],[138,38]],[[-5,50],[2,52],[-2,58],[-6,56]]];
+let pulse=0,hov=-1,MW=900,MH=470;
+const px=(lo,la)=>[(lo+180)/360*MW,(75-la)/131*MH];
+function drawMap(){
+  const cv=$("map"),w=cv.parentElement.clientWidth-32;MW=w;MH=w*.52;const r=devicePixelRatio||1;
+  cv.style.height=MH+"px";cv.width=MW*r;cv.height=MH*r;const g=cv.getContext("2d");g.setTransform(r,0,0,r,0,0);
+  g.strokeStyle=css("--line");g.lineWidth=.5;for(let lo=-150;lo<=180;lo+=30){const[x]=px(lo,0);g.beginPath();g.moveTo(x,0);g.lineTo(x,MH);g.stroke()}for(let la=-45;la<=75;la+=30){const[,y]=px(0,la);g.beginPath();g.moveTo(0,y);g.lineTo(MW,y);g.stroke()}
+  g.fillStyle=css("--land");POLY.forEach(p=>{g.beginPath();p.forEach((q,i)=>{const[x,y]=px(q[0],q[1]);i?g.lineTo(x,y):g.moveTo(x,y)});g.closePath();g.fill()});
+  C.forEach((c,i)=>{const[x,y]=px(c[2],c[3]),rad=5+Math.sqrt(c[1])*.34*(MW/900),on=i==hov,pr=rad+3*Math.sin(pulse+i);
+    g.beginPath();g.arc(x,y,pr+(on?6:0),0,7);g.fillStyle=RC[c[4]]+"55";g.fill();g.beginPath();g.arc(x,y,rad,0,7);g.fillStyle=RC[c[4]];g.globalAlpha=.9;g.fill();g.globalAlpha=1;g.strokeStyle="#fff";g.lineWidth=on?3:1.5;g.stroke()});
+}
+function loop(){pulse+=.05;drawMap();requestAnimationFrame(loop)}
+$("map").addEventListener("mousemove",e=>{const b=e.target.getBoundingClientRect(),mx=e.clientX-b.left,my=e.clientY-b.top;let h=-1;
+  C.forEach((c,i)=>{const[x,y]=px(c[2],c[3]);if(Math.hypot(x-mx,y-my)<5+Math.sqrt(c[1])*.34*(MW/900)+6)h=i});
+  if(h!==hov){hov=h;if(h>=0)beep(300+C[h][1]/12,.06)}
+  const t=$("tip");t.style.opacity=h>=0?1:0;if(h>=0){t.textContent=C[h][0]+": "+fmt(C[h][1])+" restaurants";t.style.left=(mx+24)+"px";t.style.top=(my+60)+"px"}});
+$("map").addEventListener("mouseleave",()=>{hov=-1;$("tip").style.opacity=0});
+// price vs demand
+function sim(){
+  const p=+$("p").value,e1=+$("e1").value,th=+$("th").value,e2=+$("e2").value;
+  $("o1").textContent=(p>0?"+":"")+p+"%";$("o2").textContent=e1;$("o3").textContent=th+"%";$("o4").textContent=e2;
+  const tr=x=>x<=th?e1*x:e1*th+e2*(x-th),ri=x=>+((1+x/100)*(1+tr(x)/100)*100).toFixed(1);
+  const xs=[];for(let x=-10;x<=30;x++)xs.push(x);
+  let best=xs.reduce((a,b)=>ri(b)>ri(a)?b:a,0);
+  $("res").textContent="At "+(p>0?"+":"")+p+"% price: traffic "+tr(p).toFixed(1)+"%, revenue index "+ri(p)+" (100 = today). Revenue-maximising price in this model: "+(best>0?"+":"")+best+"%.";
+  if(p>th&&!sim.over)SFX.fall();sim.over=p>th;$("res").parentElement.classList.toggle("low",ri(p)<100);ch.c4&&ch.c4.destroy();
+  ch.c4=new Chart($("c4"),{type:"line",data:{labels:xs.map(x=>x+"%"),datasets:[
+   {label:"Traffic change (%)",data:xs.map(tr),borderColor:PAL[4],backgroundColor:PAL[4]+"22",fill:true,tension:.2,yAxisID:"y",pointRadius:xs.map(x=>x==p?9:0),pointBackgroundColor:PAL[4]},
+   {label:"Revenue index",data:xs.map(ri),borderColor:PAL[0],tension:.2,yAxisID:"y1",pointRadius:xs.map(x=>x==p?9:0),pointBackgroundColor:PAL[0]}]},
+   options:{maintainAspectRatio:false,animation:{duration:500},interaction:{mode:"index",intersect:false},plugins:{legend:{labels:{color:css("--mut")}}},
+   scales:{x:{title:{display:true,text:"Price change",color:css("--mut")},ticks:{color:css("--mut"),maxTicksLimit:11},grid:{display:false}},y:{position:"left",title:{display:true,text:"Traffic %",color:PAL[4]},ticks:{color:css("--mut")},grid:{color:css("--line")}},y1:{position:"right",title:{display:true,text:"Revenue index",color:PAL[0]},ticks:{color:css("--mut")},grid:{display:false}}}}});
+}
+function table(sel){const k=Object.keys(D);
+  $("tbl").innerHTML="<thead><tr><th>Year</th>"+k.map(x=>"<th>"+D[x].l+"</th>").join("")+"</tr></thead><tbody>"+Y.map((y,i)=>`<tr data-i="${i}" class="${i==sel?"sel":""}"><td>${y}</td>${k.map(x=>"<td"+(isLow(x,i)?' class="lowc"':'')+">"+fmt(D[x].v[i])+"</td>").join("")}</tr>`).join("")+"</tbody>";
+  document.querySelectorAll("#tbl tbody tr").forEach(r=>{r.onclick=()=>{$("year").value=r.dataset.i;update();SFX.coin();setTimeout(statusSound,300)};r.onmouseenter=()=>beep(280+r.dataset.i*40,.03)})}
+function update(){const s=+$("year").value;kpis(s);main();quarterly(s);table(s)}
+["metric","year","style"].forEach(id=>$(id).addEventListener("change",()=>{update();SFX.chime();setTimeout(statusSound,380)}));
+["p","e1","th","e2"].forEach(id=>$(id).addEventListener("input",()=>{sim();beep(400+(+$("p").value+10)*15,.03)}));
+$("snd").onclick=()=>{snd=!snd;$("snd").textContent=snd?"🔊 Sound on":"🔇 Sound off";$("snd").setAttribute("aria-pressed",snd);if(snd)SFX.on()};
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{update();markets();sim()});
+let pt=null;
+function stopPlay(){clearInterval(pt);pt=null;$('play').textContent='▶ Play timeline'}
+$('play').onclick=()=>{if(pt){stopPlay();return}if(+$('year').value>=Y.length-1){$('year').value=0;update()}$('play').textContent='⏸ Pause timeline';SFX.whoosh();pt=setInterval(()=>{const i=+$('year').value;if(i>=Y.length-1){stopPlay();SFX.on();return}$('year').value=i+1;update();SFX.chime();setTimeout(statusSound,300)},1800/+$('spd').value)};
+$('spd').onchange=()=>{if(pt){stopPlay();$('play').click()}};
+const BASE=27.728e9/31536000,TICKET=9,CT=C.reduce((a,c)=>a+c[1],0);
+let lv=null,lord=0,lrev=0,noise=1,lal=false;
+const lch=new Chart($('c5'),{type:'line',data:{labels:Array(60).fill(''),datasets:[{label:'Revenue per second (US$, simulated)',data:Array(60).fill(null),borderColor:PAL[3],backgroundColor:PAL[3]+'33',fill:true,tension:.3,pointRadius:0,borderWidth:2.5},{label:'Baseline (2024 reported pace)',data:Array(60).fill(BASE),borderColor:'#999',borderDash:[6,5],pointRadius:0,borderWidth:1.5}]},options:{maintainAspectRatio:false,animation:false,plugins:{legend:{labels:{color:css('--mut')}}},scales:{x:{display:false},y:{ticks:{color:css('--mut')},grid:{color:css('--line')},suggestedMin:BASE*.6,suggestedMax:BASE*1.4}}}});
+function feed(){let r=Math.random()*CT,c=C[0];for(const x of C){r-=x[1];if(r<=0){c=x;break}}const p=+$('p').value,amt=TICKET*(1+p/100)*(.6+Math.random()*1.2),li=document.createElement('li');li.textContent='🍔 '+c[0]+' · order #'+Math.round(lord)+' · $'+amt.toFixed(2);li.style.borderColor=RC[c[4]];const u=$('lfeed');u.prepend(li);while(u.children.length>6)u.lastChild.remove();tone(1100+Math.random()*500,0,.06,'sine',.03)}
+function tick(){const p=+$('p').value,e1=+$('e1').value,th=+$('th').value,e2=+$('e2').value,tr=p<=th?e1*p:e1*th+e2*(p-th),f=(1+p/100)*(1+tr/100);noise=Math.min(1.15,Math.max(.85,noise+(Math.random()-.5)*.04));const rps=BASE*f*noise,add=rps*.5;lrev+=add;lord+=add/TICKET;const d=lch.data.datasets;d[0].data.push(Math.round(rps));d[0].data.shift();d[1].data.push(BASE);d[1].data.shift();const low=rps<BASE*.98;d[0].borderColor=low?'#d62300':PAL[3];d[0].backgroundColor=(low?'#d62300':PAL[3])+'33';lch.update('none');$('lrps').textContent='$'+Math.round(rps).toLocaleString('en-US')+'/s';$('lrps').style.color=low?'#d62300':PAL[3];$('lrev').textContent='$'+Math.round(lrev).toLocaleString('en-US');$('lord').textContent=Math.round(lord).toLocaleString('en-US');$('lc').classList.toggle('low',low);if(low&&!lal)SFX.alarm();lal=low;if(Math.random()<.85)feed()}
+$('live').onclick=()=>{if(lv){clearInterval(lv);lv=null;$('live').textContent='▶ Start live simulation'}else{lv=setInterval(tick,500);$('live').textContent='⏸ Stop live simulation';SFX.on()}};
+$('lp').oninput=()=>{$('p').value=$('lp').value;$('p').dispatchEvent(new Event('input'))};
+$('p').addEventListener('input',()=>{$('lp').value=$('p').value;$('lpo').textContent=($('p').value>0?'+':'')+$('p').value+'%'});
+lv=setInterval(tick,500);
+update();markets();sim();loop();
+</script>
+</body>
+</html>
